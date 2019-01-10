@@ -203,23 +203,27 @@ export class ScheduleDialog extends React.Component {
           <h5>Refresh every</h5>
           <div data-testid="interval">
             {interval !== IntervalEnum.NEVER ? (
-              <Select value={count} onChange={this.setCount} {...selectProps}>
-                {this.getCounts(this.state.interval).map(cnt => (
-                  <Option value={String(cnt)} key={cnt}>{cnt}</Option>
+              <span data-testid="select-count">
+                <Select value={count} onChange={this.setCount} {...selectProps}>
+                  {this.getCounts(this.state.interval).map(cnt => (
+                    <Option value={String(cnt)} key={cnt}>{cnt}</Option>
+                  ))}
+                </Select>
+              </span>
+            ) : null}
+            <span data-testid="select-interval">
+              <Select value={interval} onChange={this.setInterval} {...selectProps}>
+                {this.intervals.map(iv => (
+                  <Option value={iv.name} key={iv.name}>{iv.name}</Option>
                 ))}
               </Select>
-            ) : null}
-            <Select value={interval} onChange={this.setInterval} {...selectProps}>
-              {this.intervals.map(iv => (
-                <Option value={iv.name} key={iv.name}>{iv.name}</Option>
-              ))}
-            </Select>
+            </span>
           </div>
         </div>
         {[IntervalEnum.DAYS, IntervalEnum.WEEKS].indexOf(interval) !== -1 ? (
           <div className="schedule-component">
             <h5>On time</h5>
-            <div>
+            <div data-testid="time">
               <TimePicker
                 allowEmpty={false}
                 defaultValue={moment().hour(hour).minute(minute)}
@@ -234,23 +238,25 @@ export class ScheduleDialog extends React.Component {
         {IntervalEnum.WEEKS === interval ? (
           <div className="schedule-component">
             <h5>On day</h5>
-            <Radio.Group
-              size="medium"
-              defaultValue={this.state.dayOfWeek}
-              onChange={this.setWeekday}
-            >
-              {WEEKDAYS_SHORT.map(day => (
-                <Radio.Button value={day} key={day} className="input">
-                  {day[0]}
-                </Radio.Button>
-              ))}
-            </Radio.Group>
+            <div data-testid="weekday">
+              <Radio.Group
+                size="medium"
+                defaultValue={this.state.dayOfWeek}
+                onChange={this.setWeekday}
+              >
+                {WEEKDAYS_SHORT.map(day => (
+                  <Radio.Button value={day} key={day} className="input">
+                    {day[0]}
+                  </Radio.Button>
+                ))}
+              </Radio.Group>
+            </div>
           </div>
         ) : null}
         {interval !== IntervalEnum.NEVER ? (
           <div className="schedule-component">
             <h5>Ends</h5>
-            <div className="ends">
+            <div className="ends" data-testid="ends">
               <Radio.Group
                 size="medium"
                 value={!!until}
