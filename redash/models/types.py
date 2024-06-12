@@ -1,30 +1,16 @@
-import pytz
-from sqlalchemy.types import TypeDecorator
 from sqlalchemy.ext.indexable import index_property
 from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.types import TypeDecorator
 from sqlalchemy_utils import EncryptedType
 
+from redash.models.base import db
 from redash.utils import json_dumps, json_loads
 from redash.utils.configuration import ConfigurationContainer
-
-from .base import db
-
-
-class Configuration(TypeDecorator):
-    impl = db.Text
-
-    def process_bind_param(self, value, dialect):
-        return value.to_json()
-
-    def process_result_value(self, value, dialect):
-        return ConfigurationContainer.from_json(value)
 
 
 class EncryptedConfiguration(EncryptedType):
     def process_bind_param(self, value, dialect):
-        return super(EncryptedConfiguration, self).process_bind_param(
-            value.to_json(), dialect
-        )
+        return super(EncryptedConfiguration, self).process_bind_param(value.to_json(), dialect)
 
     def process_result_value(self, value, dialect):
         return ConfigurationContainer.from_json(
@@ -32,8 +18,8 @@ class EncryptedConfiguration(EncryptedType):
         )
 
 
-# XXX replace PseudoJSON and MutableDict with real JSON field
-class PseudoJSON(TypeDecorator):
+# Utilized for cases when JSON size is bigger than JSONB (255MB) or JSON (10MB) limit
+class JSONText(TypeDecorator):
     impl = db.Text
 
     def process_bind_param(self, value, dialect):

@@ -36,24 +36,11 @@
     {% endwith %}
 
     <form role="form" method="post" name="create_account">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <h4 class="m-t-25">Admin User</h4>
       {{ render_field(form.name) }}
       {{ render_field(form.email) }}
       {{ render_field(form.password) }}
-
-      <div class="checkbox">
-        <label>
-          {{ form.security_notifications() }}
-          Subscribe to Security Notifications
-        </label>
-      </div>
-
-      <div class="checkbox">
-        <label>
-          {{ form.newsletter() }}
-          Subscribe to newsletter (version updates, no more than once a month)
-        </label>
-      </div>
 
       <h4 class="m-t-25">General</h4>
 
